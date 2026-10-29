@@ -1,0 +1,11 @@
+{
+  "name": "التنسيقية",
+  "short_name": "التنسيقية",
+  "start_url": "/",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#faf7f5",
+  "theme_color": "#8b2b3d",
+  "icons": [{ "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }, { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }]
+}
