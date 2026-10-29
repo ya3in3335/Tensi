@@ -81,7 +81,7 @@ export function DownloadSection() {
   const [copied, setCopied] = useState(false);
   return (
     <section id="download" className="download">
-      <Tilt className="download-card glass" max={4}>
+      <Tilt className="download-card glass glow-border reveal" max={4}>
         <div className="download-main depth">
           <span className="tile-lg"><Icon name="phone" size={34} /></span>
           <h2>{t('dlTitle')}</h2>
@@ -128,10 +128,10 @@ export default function Home() {
       <section className="landing-hero">
         <div className="hero-copy">
           <span className="kicker"><img src="/logo.webp" alt="" />{name || t('landingKicker')}</span>
-          <h1>{user ? t('welcomeUser', { name: user.fullName.split(' ')[0] }) : t('landingTitle')}</h1>
+          <h1 className="words">{(user ? t('welcomeUser', { name: user.fullName.split(' ')[0] }) : t('landingTitle')).split(' ').map((w, i) => <span key={i} style={{ ['--i' as string]: i }}>{w}</span>)}</h1>
           <p>{t('landingTagline')}</p>
           <div className="hero-ctas">
-            <a className="btn big" href="#download"><Icon name="download" size={22} /> {t('ctaDownload')}</a>
+            <a className="btn big glow-border" href="#download"><Icon name="download" size={22} /> {t('ctaDownload')}</a>
             {user ? <a className="btn ghost big" href="#live">{t('ctaExplore')}</a> : <Link className="btn ghost big" to="/register">{t('ctaJoin')}</Link>}
           </div>
         </div>
@@ -147,20 +147,27 @@ export default function Home() {
         ))}
       </nav>
 
+      <div className="marquee" aria-hidden>
+        <div className="marquee-track">{[0, 1].map((k) => <span key={k}>{FEATURES.map(([ico, title]) => <b key={title}><Icon name={ico} size={20} /> {t(title)}</b>)}</span>)}</div>
+      </div>
+
       <section className="features">
-        <div className="section-title"><h2>{t('featuresTitle')}</h2><p className="muted">{t('featuresSub')}</p></div>
-        <div className="grid">{FEATURES.map(([ico, title, desc, c, c2, to]) => {
+        <div className="section-title reveal"><span className="eyebrow">{t('appName')}</span><h2>{t('featuresTitle')}</h2><p className="muted">{t('featuresSub')}</p></div>
+        <div className="bento">{FEATURES.map(([ico, title, desc, c, c2, to], i) => {
           const inner = <>
             <span className="tile-lg depth" style={{ ['--c' as string]: c, ['--c2' as string]: c2 }}><Icon name={ico} size={30} /></span>
             <h3 className="depth">{t(title)}</h3><p className="depth">{t(desc)}</p>
+            {i === 0 && <img className="bento-shot depth" src="/img/app-home-light.webp" alt="" loading="lazy" />}
+            <span className="go depth" aria-hidden><Icon name="forward" size={18} /></span>
           </>;
-          return to.startsWith('#') ? <Tilt key={title} as="a" href={to} className="feature glass">{inner}</Tilt> : <Tilt key={title} as={Link} to={to} className="feature glass">{inner}</Tilt>;
+          const cls = `feature glass spot reveal b${i + 1}`;
+          return to.startsWith('#') ? <Tilt key={title} as="a" href={to} className={cls} max={6}>{inner}</Tilt> : <Tilt key={title} as={Link} to={to} className={cls} max={6} viewTransition>{inner}</Tilt>;
         })}</div>
       </section>
 
       <div id="live" />
       {(loading || error != null) && <div style={{ marginTop: 24 }}><State loading={loading && !data} error={error} onRetry={reload} /></div>}
-      {hasLive && <div className="section-title"><h2>{t('liveTitle')}</h2></div>}
+      {hasLive && <div className="section-title reveal"><span className="eyebrow">Live</span><h2>{t('liveTitle')}</h2></div>}
 
       {data && data.announcements.length > 0 && <>
         <SectionHead title={t('announcements')} to="/news" />
@@ -203,9 +210,9 @@ export default function Home() {
       </>}
 
       <section className="steps">
-        <div className="section-title"><h2>{t('stepsTitle')}</h2></div>
+        <div className="section-title reveal"><span className="eyebrow">1 · 2 · 3</span><h2>{t('stepsTitle')}</h2></div>
         <div className="grid">{([['s1_t', 's1_d', 'user'], ['s2_t', 's2_d', 'lock'], ['s3_t', 's3_d', 'checkCircle']] as [Key, Key, IconName][]).map(([title, desc, ico], i) => (
-          <Tilt key={title} className="step glass" max={8}>
+          <Tilt key={title} className="step glass spot reveal" max={8}>
             <span className="step-num depth">{i + 1}</span>
             <span className="tile-sm depth"><Icon name={ico} size={22} /></span>
             <h3 className="depth">{t(title)}</h3><p className="depth muted">{t(desc)}</p>
@@ -215,7 +222,7 @@ export default function Home() {
 
       <DownloadSection />
 
-      <div className="cta">
+      <div className="cta reveal">
         <Icon name="gift" size={36} />
         <div><h3>{t('donateTitle')}</h3><p>{t('donateBody')}</p></div>
         <Link className="btn" to="/donations">{t('donateCta')}</Link>
