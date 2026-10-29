@@ -11,7 +11,7 @@ export function shouldShowSplash(store: Pick<Storage, 'getItem'> | null, reduced
 
 /**
  * The client's intro animation (same video as the Android app) over the page while it loads.
- * Skippable after 1.5 s; ends on its own when the video finishes, fails, or after a safety timeout.
+ * Played at 1.6× (about 6 s), skippable after 0.8 s; ends on its own when the video finishes, fails, or after a safety timeout.
  */
 export default function Splash() {
   const { t } = useI18n();
@@ -34,10 +34,11 @@ export default function Splash() {
   useEffect(() => {
     if (!show) return;
     document.documentElement.style.overflow = 'hidden';
-    const skip = setTimeout(() => setCanSkip(true), 1500);
-    const safety = setTimeout(close, 12_000);
+    const skip = setTimeout(() => setCanSkip(true), 800);
+    const safety = setTimeout(close, 8_000);
     // Autoplay can be refused (e.g. data saver): then the splash simply closes.
-    video.current?.play().catch(() => setTimeout(close, 1200));
+    if (video.current) video.current.playbackRate = 1.6;
+    video.current?.play().catch(() => setTimeout(close, 800));
     return () => { clearTimeout(skip); clearTimeout(safety); document.documentElement.style.overflow = ''; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [show]);
