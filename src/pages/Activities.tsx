@@ -3,9 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api, mediaUrl } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useDates, useErr, useI18n, useLoc } from '../lib/i18n';
-import { Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
+import { OkBox, Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
 import { DateBadge } from './Home';
 import { youtubeId } from './Content';
+import Icon from '../components/Icon';
 
 export interface Activity {
   id: string; titleAr: string; titleFr: string | null; descriptionAr: string; descriptionFr: string | null; location: string | null;
@@ -25,8 +26,8 @@ export function ActivityRow({ a }: { a: Activity }) {
         <div className="meta">
           {a.isCampaign && <Pill tone="warn">{t('campaign')}</Pill>}
           {a.status === 'cancelled' && <Pill tone="bad">{t('cancelled')}</Pill>}
-          {a.location && <span>📍 {a.location}</span>}
-          <span>🕒 {d.time(a.startsAt)}</span>
+          {a.location && <span><Icon name="pin" /> {a.location}</span>}
+          <span><Icon name="clock" /> {d.time(a.startsAt)}</span>
           {a.capacity && <span>{t('seats', { n: a.registeredCount, max: a.capacity })}</span>}
         </div>
       </div>
@@ -72,17 +73,17 @@ export function ActivityDetail() {
         <div className="meta">
           {a.isCampaign && <Pill tone="warn">{t('campaign')}</Pill>}
           {a.status === 'cancelled' && <Pill tone="bad">{t('cancelled')}</Pill>}
-          <span>🗓 {d.dateTime(a.startsAt)} → {d.dateTime(a.endsAt)}</span>
-          {a.location && <span>📍 {a.location}</span>}
-          {a.latitude != null && a.longitude != null && <a href={`https://www.google.com/maps?q=${a.latitude},${a.longitude}`} target="_blank" rel="noopener noreferrer">🗺 Maps</a>}
+          <span><Icon name="calendar" /> {d.dateTime(a.startsAt)} – {d.dateTime(a.endsAt)}</span>
+          {a.location && <span><Icon name="pin" /> {a.location}</span>}
+          {a.latitude != null && a.longitude != null && <a href={`https://www.google.com/maps?q=${a.latitude},${a.longitude}`} target="_blank" rel="noopener noreferrer"><Icon name="map" /> Maps</a>}
           <span>{a.capacity ? t('seats', { n: a.registeredCount, max: a.capacity }) : t('registeredN', { n: a.registeredCount })}</span>
         </div>
         <Text>{loc(a.descriptionAr, a.descriptionFr)}</Text>
         {yt && <iframe src={`https://www.youtube-nocookie.com/embed/${yt}`} title="video" style={{ width: '100%', aspectRatio: '16/9', border: 0, borderRadius: 16 }} allowFullScreen />}
         {actionErr != null && <p className="error-text">{err(actionErr)}</p>}
-        {data.myRegistration === 'attended' ? <div className="ok-box">{t('attended')}</div>
+        {data.myRegistration === 'attended' ? <OkBox>{t('attended')}</OkBox>
           : data.myRegistration === 'registered' ? <>
-            <div className="ok-box">{t('youAreRegistered')}</div>
+            <OkBox>{t('youAreRegistered')}</OkBox>
             {a.registrationOpen && <button className="btn danger" disabled={busy} onClick={() => act('cancel')}>{t('cancelRegistration')}</button>}
           </>
           : !a.registrationOpen ? <Pill>{t('registrationClosed')}</Pill>

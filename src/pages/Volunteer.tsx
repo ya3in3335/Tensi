@@ -4,6 +4,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useDates, useErr, useI18n, useLoc, type Key } from '../lib/i18n';
 import { Field, Page, Pill, State, useLoad } from '../lib/ui';
+import Icon from '../components/Icon';
 
 interface Application { id: string; status: string; reviewNote: string | null; skills: string; availability: string }
 interface Assignment { id: string; title_ar: string; title_fr: string | null; starts_at: number; location: string | null; role_note: string | null }
@@ -32,13 +33,13 @@ export default function Volunteer() {
   return (
     <Page title={t('volunteerTitle')}>
       <p className="muted" style={{ marginTop: -6 }}>{t('volunteerIntro')}</p>
-      {!user ? <div className="panel glass stack center"><span style={{ fontSize: 46 }}>🤝</span><p>{t('needLogin')}</p><button className="btn" onClick={() => nav('/login', { state: { next: '/volunteer' } })}>{t('login')}</button></div>
+      {!user ? <div className="panel glass stack center"><Icon name="users" size={52} className="hero-icon" /><p>{t('needLogin')}</p><button className="btn" onClick={() => nav('/login', { state: { next: '/volunteer' } })}>{t('login')}</button></div>
         : <>
           <State loading={loading && !data} error={error} onRetry={reload} />
           {data?.application ? <div className="panel glass stack">
             <div><Pill tone={data.application.status === 'approved' ? 'ok' : data.application.status === 'rejected' ? 'bad' : 'warn'}>{t(`status_${data.application.status}` as Key)}</Pill></div>
             {data.application.reviewNote && <p>{data.application.reviewNote}</p>}
-            {data.assignments.length > 0 && <><h3>{t('assignments')}</h3>{data.assignments.map((a) => <div key={a.id} className="list-item glass"><div className="grow"><b>{loc(a.title_ar, a.title_fr)}</b><div className="meta"><span>{d.dateTime(a.starts_at)}</span>{a.location && <span>📍 {a.location}</span>}{a.role_note && <span>{a.role_note}</span>}</div></div></div>)}</>}
+            {data.assignments.length > 0 && <><h3>{t('assignments')}</h3>{data.assignments.map((a) => <div key={a.id} className="list-item glass"><div className="grow"><b>{loc(a.title_ar, a.title_fr)}</b><div className="meta"><span>{d.dateTime(a.starts_at)}</span>{a.location && <span><Icon name="pin" /> {a.location}</span>}{a.role_note && <span>{a.role_note}</span>}</div></div></div>)}</>}
             <button className="btn danger" disabled={busy} onClick={withdraw}>{t('withdraw')}</button>
           </div>
           : data && <form className="panel glass stack" onSubmit={(e) => { e.preventDefault(); void apply(); }}>

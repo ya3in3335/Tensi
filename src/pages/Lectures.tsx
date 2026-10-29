@@ -4,8 +4,9 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useDates, useErr, useI18n, useLoc, type Key } from '../lib/i18n';
 import { GENDERS, MARITAL, OCCUPATIONS, WILAYAS, missingFields, needsDetail, normalize, type MemberProfile } from '../lib/lectureForm';
-import { Field, Ltr, Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
+import { Field, Ltr, OkBox, Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
 import { DateBadge } from './Home';
+import Icon from '../components/Icon';
 
 interface Lecture { id: string; kind: string; titleAr: string; titleFr: string | null; descriptionAr: string | null; descriptionFr: string | null; speaker: string | null; location: string | null; onlineUrl: string | null; startsAt: number; endsAt: number; capacity: number | null; registeredCount: number; status: string; registrationOpen: boolean; myRegistration?: string | null }
 
@@ -29,7 +30,7 @@ export function LecturesPage() {
               {l.myRegistration === 'registered' && <Pill tone="ok">{t('youAreRegistered')}</Pill>}
               {l.myRegistration === 'attended' && <Pill tone="ok">{t('attended')}</Pill>}</div>
             <h3>{loc(l.titleAr, l.titleFr)}</h3>
-            <div className="meta">{l.speaker && <span>🎤 {l.speaker}</span>}<span>🕒 {d.time(l.startsAt)}</span>{l.location && <span>📍 {l.location}</span>}{l.capacity && <span>{t('seats', { n: l.registeredCount, max: l.capacity })}</span>}</div>
+            <div className="meta">{l.speaker && <span><Icon name="mic" /> {l.speaker}</span>}<span><Icon name="clock" /> {d.time(l.startsAt)}</span>{l.location && <span><Icon name="pin" /> {l.location}</span>}{l.capacity && <span>{t('seats', { n: l.registeredCount, max: l.capacity })}</span>}</div>
           </div>
         </Link>
       ))}</div>}
@@ -60,24 +61,24 @@ export function LectureDetail() {
         <div><Pill>{t(`kind_${l.kind}` as Key)}</Pill></div>
         <h2>{loc(l.titleAr, l.titleFr)}</h2>
         <div className="meta">
-          <span>🗓 {d.dateTime(l.startsAt)} → {d.time(l.endsAt)}</span>
-          {l.speaker && <span>🎤 {t('speaker', { s: l.speaker })}</span>}
-          {l.location && <span>📍 {l.location}</span>}
+          <span><Icon name="calendar" /> {d.dateTime(l.startsAt)} – {d.time(l.endsAt)}</span>
+          {l.speaker && <span><Icon name="mic" /> {t('speaker', { s: l.speaker })}</span>}
+          {l.location && <span><Icon name="pin" /> {l.location}</span>}
           <span>{l.capacity ? t('seats', { n: l.registeredCount, max: l.capacity }) : t('registeredN', { n: l.registeredCount })}</span>
         </div>
-        {l.onlineUrl && <a href={l.onlineUrl} target="_blank" rel="noopener noreferrer">🎥 <Ltr>{l.onlineUrl}</Ltr></a>}
+        {l.onlineUrl && <a href={l.onlineUrl} target="_blank" rel="noopener noreferrer"><Icon name="video" /> <Ltr>{l.onlineUrl}</Ltr></a>}
         {l.descriptionAr && <Text>{loc(l.descriptionAr, l.descriptionFr)}</Text>}
         {actionErr != null && <p className="error-text">{err(actionErr)}</p>}
         {l.status === 'cancelled' ? <Pill tone="bad">{t('cancelled')}</Pill>
-          : data.myRegistration === 'attended' ? <div className="ok-box">{t('attended')}</div>
+          : data.myRegistration === 'attended' ? <OkBox>{t('attended')}</OkBox>
           : data.myRegistration === 'registered' ? <>
-            <div className="ok-box">{t('youAreRegistered')}</div>
+            <OkBox>{t('youAreRegistered')}</OkBox>
             {l.registrationOpen && <div className="row"><button className="btn ghost" onClick={() => nav(`/lectures/${id}/register`)}>{t('editAnswers')}</button><button className="btn danger" disabled={busy} onClick={cancel}>{t('cancelRegistration')}</button></div>}
           </>
           : !l.registrationOpen ? <Pill>{t('registrationClosed')}</Pill>
           : !user ? <><p className="muted">{t('needLogin')}</p><button className="btn" onClick={() => nav('/login', { state: { next: `/lectures/${id}` } })}>{t('login')}</button></>
           : !data.contactVerified ? <>
-            <div className="info-box">🔒 {t('needVerifyContact')}</div>
+            <div className="info-box"><Icon name="lock" /> {t('needVerifyContact')}</div>
             <div className="row">
               {!user.emailVerified && <button className="btn ghost" onClick={() => nav('/verify-email', { state: { next: `/lectures/${id}` } })}>{t('verifyEmail')}</button>}
               {!user.phoneVerified && <button className="btn ghost" onClick={() => nav('/verify-phone', { state: { next: `/lectures/${id}` } })}>{t('verifyPhone')}</button>}

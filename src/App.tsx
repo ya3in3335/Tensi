@@ -10,8 +10,9 @@ import { LecturesPage, LectureDetail, LectureForm } from './pages/Lectures';
 import Volunteer from './pages/Volunteer';
 import { Login, Register, Forgot, VerifyEmail, VerifyPhone } from './pages/Auth';
 import { Account, Notifications, MyActivities } from './pages/Account';
+import Icon, { type IconName } from './components/Icon';
 
-const MAIN: [string, Key, string][] = [['/', 'home', '⌂'], ['/activities', 'activities', '◷'], ['/polls', 'polls', '☑'], ['/volunteer', 'volunteer', '♡'], ['/account', 'account', '◉']];
+const MAIN: [string, Key, IconName][] = [['/', 'home', 'home'], ['/activities', 'activities', 'calendar'], ['/polls', 'polls', 'ballot'], ['/volunteer', 'volunteer', 'heart'], ['/account', 'account', 'user']];
 const TOP: [string, Key][] = [['/', 'home'], ['/news', 'news'], ['/activities', 'activities'], ['/lectures', 'lectures'], ['/polls', 'polls'], ['/volunteer', 'volunteer'], ['/gallery', 'gallery'], ['/donations', 'donations']];
 
 /** Pill shown while offline, then briefly when the connection is back. */
@@ -26,7 +27,7 @@ function ConnectionBanner() {
     return () => { window.removeEventListener('online', on); window.removeEventListener('offline', off); };
   }, []);
   if (online && !back) return null;
-  return <div className={online ? 'conn back' : 'conn'} role="status">{online ? '✓' : t('offline')}</div>;
+  return <div className={online ? 'conn back' : 'conn'} role="status">{online ? <Icon name="check" size={18} /> : <><Icon name="wifiOff" size={18} /> {t('offline')}</>}</div>;
 }
 
 export default function App() {
@@ -42,7 +43,7 @@ export default function App() {
         <nav aria-label="main">{TOP.map(([to, k]) => <NavLink key={to} to={to} end={to === '/'}>{t(k)}</NavLink>)}</nav>
         <div className="top-actions">
           <button className="icon-btn" onClick={() => setLang(lang === 'ar' ? 'fr' : 'ar')} aria-label={t('language')} title={t('language')}>{lang === 'ar' ? 'Fr' : 'ع'}</button>
-          {user && <Link to="/notifications" className="icon-btn" aria-label={t('notifications')}>🔔</Link>}
+          {user && <Link to="/notifications" className="icon-btn" aria-label={t('notifications')}><Icon name="bell" /></Link>}
           <Link to={user ? '/account' : '/login'} className="btn small">{user ? user.fullName.split(' ')[0] : t('login')}</Link>
         </div>
       </header>
@@ -78,7 +79,7 @@ export default function App() {
         <div>© {new Date().getFullYear()} {t('appName')}</div>
       </footer>
       <nav className="bottom-nav glass" aria-label="tabs">
-        {MAIN.map(([to, k, ico]) => <NavLink key={to} to={to} end={to === '/'}><span className="ico" aria-hidden>{ico}</span>{t(k)}</NavLink>)}
+        {MAIN.map(([to, k, ico]) => <NavLink key={to} to={to} end={to === '/'}><Icon name={ico} size={22} className="ico" />{t(k)}</NavLink>)}
       </nav>
     </>
   );

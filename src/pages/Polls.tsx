@@ -4,6 +4,7 @@ import { api } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useDates, useErr, useI18n, useLoc } from '../lib/i18n';
 import { Modal, Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
+import Icon from '../components/Icon';
 
 interface Poll { id: string; titleAr: string; titleFr: string | null; descriptionAr: string | null; descriptionFr: string | null; startsAt: number; endsAt: number; eligibility: string; resultVisibility: string; anonymous: boolean; state: string; hasVoted?: boolean }
 interface Option { id: string; labelAr: string; labelFr: string | null; description: string | null; imageUrl: string | null }
@@ -22,7 +23,7 @@ export function PollsPage() {
       <State loading={loading && !data} error={error} empty={data?.items.length === 0} onRetry={reload} />
       {data && <div className="stack">{data.items.map((p) => (
         <Link key={p.id} to={`/polls/${p.id}`} className="list-item glass">
-          <span className="tile-sm">🗳</span>
+          <span className="tile-sm"><Icon name="ballot" size={22} /></span>
           <div className="grow">
             <h3>{loc(p.titleAr, p.titleFr)}</h3>
             <div className="meta"><span>{t('pollEnds', { d: d.dateTime(p.endsAt) })}</span>{p.hasVoted && <Pill tone="ok">{t('voted')}</Pill>}{p.eligibility === 'members' && <Pill>{t('membersOnly')}</Pill>}</div>
@@ -66,7 +67,7 @@ export function PollDetail() {
         <h2>{loc(p.titleAr, p.titleFr)}</h2>
         {p.descriptionAr && <Text>{loc(p.descriptionAr, p.descriptionFr)}</Text>}
         <div className="meta"><span>{t('pollEnds', { d: d.dateTime(p.endsAt) })}</span>{p.anonymous && <Pill>{t('anonymous')}</Pill>}{p.eligibility === 'members' && <Pill>{t('membersOnly')}</Pill>}</div>
-        {data.hasVoted && <div className="ok-box">{justVoted ? t('voted') : t('alreadyVoted')}{data.receipt && <div style={{ fontWeight: 400, fontSize: 14 }}>{t('receipt', { r: data.receipt })}</div>}</div>}
+        {data.hasVoted && <div className="ok-box"><Icon name="checkCircle" size={22} /> <span>{justVoted ? t('voted') : t('alreadyVoted')}{data.receipt && <div style={{ fontWeight: 400, fontSize: 14 }}>{t('receipt', { r: data.receipt })}</div>}</span></div>}
         <div className="stack" role="radiogroup">{data.options.map((o) => {
           const n = data.results?.byOption[o.id] ?? 0;
           return (

@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api, mediaUrl } from '../lib/api';
 import { useDates, useI18n, useLoc, type Key } from '../lib/i18n';
 import { Ltr, Modal, Page, Pill, State, Tabs, Text, useLoad } from '../lib/ui';
+import Icon from '../components/Icon';
 
 interface NewsItem { id: string; titleAr: string; titleFr: string | null; category: string; imageUrl: string | null; publishedAt: number | null; bodyAr?: string; bodyFr?: string | null; excerptAr?: string | null; excerptFr?: string | null }
 const CATS: [string, Key][] = [['', 'catAll'], ['announcement', 'catAnnouncement'], ['news', 'catNews'], ['campaign', 'catCampaign'], ['report', 'catReport']];
@@ -89,7 +90,7 @@ export function Gallery() {
       <State loading={loading && !data} error={error} empty={data?.items.length === 0} onRetry={reload} />
       {data && <div className="gallery">{data.items.map((m) => (
         <button key={m.id} onClick={() => setOpen(m)} aria-label={loc(m.titleAr, m.titleFr) || t('gallery')}>
-          <img src={thumb(m)} alt="" loading="lazy" />{m.kind === 'video' && <span className="play">▶</span>}
+          <img src={thumb(m)} alt="" loading="lazy" />{m.kind === 'video' && <span className="play"><Icon name="play" size={44} /></span>}
         </button>
       ))}</div>}
       {open && <Modal title={loc(open.titleAr, open.titleFr) || t('gallery')} onClose={() => setOpen(null)}>
@@ -126,7 +127,7 @@ export function Donations() {
   return (
     <Page title={t('donations')}>
       <State loading={loading && !data} error={error} onRetry={reload} />
-      {data && !any && data.campaigns.length === 0 && <div className="state"><span className="state-icon">💝</span><p>{t('noDonation')}</p></div>}
+      {data && !any && data.campaigns.length === 0 && <div className="state"><Icon name="gift" size={40} className="state-icon" /><p>{t('noDonation')}</p></div>}
       {dn && any && <div className="panel glass stack">
         {(dn.instructionsAr || dn.instructionsFr) && <Text>{loc(dn.instructionsAr, dn.instructionsFr)}</Text>}
         {dn.ccpAccount && <><h3>{t('ccp')}</h3><CopyRow label={t('ccp')} value={dn.ccpAccount} />{dn.ccpKey && <CopyRow label={t('key')} value={dn.ccpKey} />}{dn.ccpHolder && <p className="muted">{t('holder')}: {dn.ccpHolder}</p>}</>}
@@ -162,9 +163,9 @@ export function About() {
         {(s.contact_phone || s.contact_email || s.contact_address_ar) && <>
           <hr className="soft" />
           <h3>{t('contactUs')}</h3>
-          {s.contact_phone && <p>📞 <a href={`tel:${s.contact_phone}`}><Ltr>{s.contact_phone}</Ltr></a></p>}
-          {s.contact_email && <p>✉️ <a href={`mailto:${s.contact_email}`}><Ltr>{s.contact_email}</Ltr></a></p>}
-          {s.contact_address_ar && <p>📍 {loc(s.contact_address_ar, s.contact_address_fr)}</p>}
+          {s.contact_phone && <p><Icon name="call" /> <a href={`tel:${s.contact_phone}`}><Ltr>{s.contact_phone}</Ltr></a></p>}
+          {s.contact_email && <p><Icon name="mail" /> <a href={`mailto:${s.contact_email}`}><Ltr>{s.contact_email}</Ltr></a></p>}
+          {s.contact_address_ar && <p><Icon name="pin" /> {loc(s.contact_address_ar, s.contact_address_fr)}</p>}
         </>}
       </div>}
     </Page>

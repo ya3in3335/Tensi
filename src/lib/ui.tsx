@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useErr, useI18n } from './i18n';
+import Icon from '../components/Icon';
 
 /** Loads data with loading / error / reload; reloads when deps change. */
 export function useLoad<T>(fn: () => Promise<T>, deps: unknown[] = []) {
@@ -30,7 +31,7 @@ export function Page({ title, back, children, actions }: { title?: string; back?
   return (
     <section className="page">
       {title && <header className="page-head">
-        {back && <button className="icon-btn" onClick={() => (history.length > 1 ? nav(-1) : nav('/'))} aria-label={t('back')}><span className="flip">←</span></button>}
+        {back && <button className="icon-btn" onClick={() => (history.length > 1 ? nav(-1) : nav('/'))} aria-label={t('back')}><Icon name="back" /></button>}
         <h1>{title}</h1>
         <div className="actions">{actions}</div>
       </header>}
@@ -43,8 +44,8 @@ export function State({ loading, error, empty, onRetry }: { loading?: boolean; e
   const { t } = useI18n();
   const err = useErr();
   if (loading) return <div className="skeletons" aria-label={t('loading')}>{[0, 1, 2].map((i) => <div key={i} className="skeleton" />)}</div>;
-  if (error) return <div className="state error" role="alert"><span className="state-icon">⚠</span><p>{err(error)}</p>{onRetry && <button className="btn ghost" onClick={onRetry}>{t('retry')}</button>}</div>;
-  if (empty) return <div className="state"><span className="state-icon">○</span><p>{t('empty')}</p></div>;
+  if (error) return <div className="state error" role="alert"><Icon name="alert" size={36} className="state-icon" /><p>{err(error)}</p>{onRetry && <button className="btn ghost" onClick={onRetry}>{t('retry')}</button>}</div>;
+  if (empty) return <div className="state"><Icon name="inbox" size={36} className="state-icon" /><p>{t('empty')}</p></div>;
   return null;
 }
 
@@ -52,7 +53,10 @@ export function Tabs<T extends string>({ value, options, onChange }: { value: T;
   return <div className="tabs" role="tablist">{options.map(([v, l]) => <button key={v} role="tab" aria-selected={v === value} className={v === value ? 'tab on' : 'tab'} onClick={() => onChange(v)}>{l}</button>)}</div>;
 }
 
-export const Pill = ({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'ok' | 'warn' | 'bad' | 'brand' }) => <span className={`pill ${tone}`}>{children}</span>;
+export const Pill = ({ children, tone = 'neutral' }: { children: ReactNode; tone?: 'neutral' | 'ok' | 'warn' | 'bad' | 'brand' }) => <span className={`pill ${tone}`}>{tone === 'ok' && <Icon name="check" size={14} />}{children}</span>;
+
+/** Green confirmation box with a check icon. */
+export const OkBox = ({ children }: { children: ReactNode }) => <div className="ok-box"><Icon name="checkCircle" size={22} />{' '}<span>{children}</span></div>;
 
 export function SectionHead({ title, to }: { title: string; to?: string }) {
   const { t } = useI18n();
@@ -69,7 +73,7 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal glass" role="dialog" aria-modal="true" aria-label={title} onClick={(e) => e.stopPropagation()}>
-        <header><h2>{title}</h2><button className="icon-btn" onClick={onClose} aria-label={t('close')}>✕</button></header>
+        <header><h2>{title}</h2><button className="icon-btn" onClick={onClose} aria-label={t('close')}><Icon name="close" /></button></header>
         {children}
       </div>
     </div>

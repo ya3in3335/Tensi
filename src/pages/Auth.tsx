@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { api, ApiError, type User } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useErr, useI18n } from '../lib/i18n';
-import { Field, Ltr, Page } from '../lib/ui';
+import { Field, Ltr, OkBox, Page } from '../lib/ui';
+import Icon from '../components/Icon';
 
 const useNext = () => (useLocation().state as { next?: string } | null)?.next;
 
@@ -112,7 +113,7 @@ export function Forgot() {
         if (step === 'ask') void run(() => api.post('/api/auth/password/forgot', { identifier: id.trim() }), 'code');
         else if (step === 'code') void run(() => api.post('/api/auth/password/reset', { identifier: id.trim(), code, newPassword: pw }), 'done');
       }}>
-        {step === 'done' ? <><div className="ok-box">{t('resetDone')}</div><Link className="btn" to="/login">{t('login')}</Link></> : <>
+        {step === 'done' ? <><OkBox>{t('resetDone')}</OkBox><Link className="btn" to="/login">{t('login')}</Link></> : <>
           <Field label={t('identifier')}><input dir="ltr" required value={id} disabled={step === 'code'} onChange={(ev) => setId(ev.target.value)} /></Field>
           {step === 'code' && <>
             <div className="info-box">{t('resetSent')}</div>
@@ -170,7 +171,7 @@ export function VerifyEmail() {
   return (
     <Page title={t('emailTitle')} back>
       <div className="panel glass stack auth center">
-        <span style={{ fontSize: 54 }}>📧</span>
+        <Icon name="mail" size={56} className="hero-icon" />
         {phase === 'sending' && <p>{t('emailSending')}</p>}
         {phase === 'failed' && <><p className="error-text">{err(e)}</p><button className="btn" onClick={send}>{t('retry')}</button></>}
         {phase === 'sent' && <>
@@ -222,12 +223,12 @@ export function VerifyPhone() {
   return (
     <Page title={t('phoneTitle')} back>
       <div className="panel glass stack auth center">
-        <span style={{ fontSize: 54 }}>📱</span>
-        {verified ? <><div className="ok-box">{t('phoneVerified')}</div><button className="btn" onClick={() => nav(next ?? '/', { replace: true })}>{t('confirm')}</button></> : <>
+        <Icon name="send" size={56} className="hero-icon" />
+        {verified ? <><OkBox>{t('phoneVerified')}</OkBox><button className="btn" onClick={() => nav(next ?? '/', { replace: true })}>{t('confirm')}</button></> : <>
           <p>{t('phoneIntro')}</p>
           {user && <p><b><Ltr>{user.phone}</Ltr></b></p>}
           {status && ['pending', 'awaiting_contact'].includes(status) ? <>
-            <p className="muted">⏳ {t('waitingTelegram')}</p>
+            <p className="muted"><Icon name="hourglass" /> {t('waitingTelegram')}</p>
             {v && <a className="btn" href={v.deepLink} target="_blank" rel="noopener noreferrer">{t('openTelegram')}</a>}
           </> : <>
             {status && <p className="error-text">{t('verifyFailed', { r: reason ?? status })}</p>}
