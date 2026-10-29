@@ -438,3 +438,19 @@ body { letter-spacing: -0.005em; }
   .words span { animation: none; opacity: 1; transform: none; filter: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* Browsers without color-mix() (older Android browsers): plain equivalents so nothing turns transparent. */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .glass { background: var(--glass-strong); }
+  .pill { background: rgba(139, 43, 61, .12); } .pill.ok { background: rgba(46, 125, 79, .16); } .pill.warn { background: rgba(180, 86, 27, .16); } .pill.bad { background: rgba(179, 38, 30, .14); }
+  .ok-box { background: rgba(46, 125, 79, .13); } .info-box { background: rgba(242, 131, 44, .14); }
+  .eyebrow { background: rgba(232, 67, 42, .1); border-color: rgba(232, 67, 42, .22); }
+  .topbar { background: var(--glass-strong); } .topbar nav { background: rgba(0, 0, 0, .04); }
+  .download-card { background: var(--glass-strong); }
+  .bento .b1 { background: var(--glass-strong); }
+  .spot::after { background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(242, 131, 44, .22), transparent 45%); }
+  .glow-border::before { display: none; }
+  .tile-sm, .tile-lg { box-shadow: 0 10px 20px -10px rgba(232, 67, 42, .6); }
+  .btn.ghost:hover { background: rgba(139, 43, 61, .07); }
+  input:focus, select:focus, textarea:focus { box-shadow: 0 0 0 4px rgba(232, 67, 42, .18); }
+}
