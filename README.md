@@ -17,3 +17,9 @@ npm run deploy    # build + publish to Cloudflare Pages (project "association-we
 
 Optional build variables: `VITE_API_BASE_URL`, `VITE_API_FALLBACK_URLS` (comma-separated).
 Security headers (CSP etc.) are in `public/_headers`; SPA routing in `public/_redirects`.
+
+## Android app download
+
+The landing page offers the latest members' APK (`public/downloads/association-members.apk`) with its
+version, size, date and SHA-256 from `public/app-latest.json`, plus a QR code (`public/img/apk-qr.svg`).
+To publish a new build: `node scripts/update-apk.mjs path/to/app.apk <version>` then `npm run deploy`.

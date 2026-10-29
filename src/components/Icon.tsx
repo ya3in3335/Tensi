@@ -40,6 +40,7 @@ const P = {
   inbox: <><path d="M3 13h5l2 3h4l2-3h5" /><path d="M5 5h14l2 8v6H3v-6z" /></>,
   wifiOff: <><path d="M2 2l20 20M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5-2.7M19 13a10 10 0 0 0-2.3-1.6M2 8.8a15 15 0 0 1 4.2-2.5M22 8.8A15 15 0 0 0 10.7 5M12 20h.01" /></>,
   hourglass: <><path d="M6 3h12M6 21h12M7 3v3a5 5 0 0 0 10 0V3M7 21v-3a5 5 0 0 1 10 0v3" /></>,
+  download: <><path d="M12 3v12M7 10l5 5 5-5M5 21h14" /></>,
   send: <><path d="M21 3 3 10l7 3 3 7z" /><path d="m10 13 4-4" /></>,
 } as const;
 
