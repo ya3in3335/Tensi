@@ -334,10 +334,9 @@ html, body { overflow-x: clip; }
 }
 
 /* Intro splash (client's animation). Video background colour continues to the screen edges on wide screens. */
-.splash { position: fixed; inset: 0; z-index: 200; display: grid; place-items: center; background: radial-gradient(ellipse at center, #462a21 0%, #2e211a 45%, #1a120e 100%); transition: opacity .55s ease, transform .55s ease; }
+.splash { position: fixed; inset: 0; z-index: 200; background: #2e211a; transition: opacity .55s ease, transform .55s ease; }
 .splash.leaving { opacity: 0; transform: scale(1.04); pointer-events: none; }
-.splash video { width: 100%; height: 100%; object-fit: contain; }
-@media (max-aspect-ratio: 9 / 16) { .splash video { object-fit: cover; } }
+.splash video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .splash-skip { position: absolute; bottom: calc(28px + env(safe-area-inset-bottom)); inset-inline-end: 22px; padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .35);
   background: rgba(30, 14, 10, .55); color: #fff; font: inherit; font-weight: 700; cursor: pointer; backdrop-filter: blur(10px); box-shadow: 0 6px 18px rgba(0, 0, 0, .25); animation: fade .4s; }
 .splash-skip:hover { background: rgba(30, 14, 10, .72); }
