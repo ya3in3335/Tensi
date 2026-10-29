@@ -11,6 +11,7 @@ import Volunteer from './pages/Volunteer';
 import { Login, Register, Forgot, VerifyEmail, VerifyPhone } from './pages/Auth';
 import { Account, Notifications, MyActivities } from './pages/Account';
 import Icon, { type IconName } from './components/Icon';
+import Splash from './components/Splash';
 
 const MAIN: [string, Key, IconName][] = [['/', 'home', 'home'], ['/activities', 'activities', 'calendar'], ['/polls', 'polls', 'ballot'], ['/volunteer', 'volunteer', 'heart'], ['/account', 'account', 'user']];
 const TOP: [string, Key][] = [['/', 'home'], ['/news', 'news'], ['/activities', 'activities'], ['/lectures', 'lectures'], ['/polls', 'polls'], ['/volunteer', 'volunteer'], ['/gallery', 'gallery'], ['/donations', 'donations']];
@@ -37,6 +38,7 @@ export default function App() {
   useEffect(() => { window.scrollTo({ top: 0 }); }, [loc.pathname]);
   return (
     <>
+      <Splash />
       <ConnectionBanner />
       <header className="topbar glass">
         <Link to="/" className="brand"><img src="/logo.webp" alt="" /><span>{t('appName')}</span></Link>

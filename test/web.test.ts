@@ -90,3 +90,13 @@ describe('forms', () => {
     expect(youtubeId('https://example.com/v.mp4')).toBeNull();
   });
 });
+
+import { shouldShowSplash } from '../src/components/Splash';
+describe('splash', () => {
+  it('plays once per session and never with reduced motion', () => {
+    expect(shouldShowSplash({ getItem: () => null }, false)).toBe(true);
+    expect(shouldShowSplash({ getItem: () => '1' }, false)).toBe(false);
+    expect(shouldShowSplash({ getItem: () => null }, true)).toBe(false);
+    expect(shouldShowSplash(null, false)).toBe(true);
+  });
+});
