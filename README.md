@@ -15,8 +15,15 @@ npm run dev       # local development
 npm run deploy    # build + publish to Cloudflare Pages (project "association-web")
 ```
 
+The repository is also connected to Cloudflare Workers Builds: each push runs `npm run build` then
+`npx wrangler deploy`, which publishes `dist/` as static assets of the Worker "tensi" (see `wrangler.jsonc`;
+unknown paths fall back to `index.html` for client-side routing).
+
+```bash
+```
+
 Optional build variables: `VITE_API_BASE_URL`, `VITE_API_FALLBACK_URLS` (comma-separated).
-Security headers (CSP etc.) are in `public/_headers`; SPA routing in `public/_redirects`.
+Security headers (CSP etc.) are in `public/_headers` (used by both Pages and Workers).
 
 ## Android app download
 

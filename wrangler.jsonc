@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers static site (used by the Git-connected build: "npm run build" then "npx wrangler deploy").
+  // Without this file, wrangler tries to auto-configure the project and fails on vite.config.ts.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tensi",
+  "compatibility_date": "2025-10-01",
+  "assets": {
+    "directory": "./dist",
+    // Client-side routes (/news/123, /lectures/…) are served by index.html.
+    "not_found_handling": "single-page-application"
+  },
+  "observability": { "enabled": true }
+}
