@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { api } from '../lib/api';
+import { api, safeUrl } from '../lib/api';
 import { useAuth } from '../lib/auth';
 import { useDates, useErr, useI18n, useLoc, type Key } from '../lib/i18n';
 import { GENDERS, MARITAL, OCCUPATIONS, WILAYAS, missingFields, needsDetail, normalize, type MemberProfile } from '../lib/lectureForm';
@@ -66,7 +66,7 @@ export function LectureDetail() {
           {l.location && <span><Icon name="pin" /> {l.location}</span>}
           <span>{l.capacity ? t('seats', { n: l.registeredCount, max: l.capacity }) : t('registeredN', { n: l.registeredCount })}</span>
         </div>
-        {l.onlineUrl && <a href={l.onlineUrl} target="_blank" rel="noopener noreferrer"><Icon name="video" /> <Ltr>{l.onlineUrl}</Ltr></a>}
+        {safeUrl(l.onlineUrl) && <a href={safeUrl(l.onlineUrl)} target="_blank" rel="noopener noreferrer"><Icon name="video" /> <Ltr>{l.onlineUrl}</Ltr></a>}
         {l.descriptionAr && <Text>{loc(l.descriptionAr, l.descriptionFr)}</Text>}
         {actionErr != null && <p className="error-text">{err(actionErr)}</p>}
         {l.status === 'cancelled' ? <Pill tone="bad">{t('cancelled')}</Pill>

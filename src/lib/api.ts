@@ -139,4 +139,6 @@ const storage: Store = (() => {
 })();
 
 export const api = new Api(API_BASES, storage);
-export const mediaUrl = (u: string | null | undefined) => (!u ? '' : u.startsWith('/') ? API_BASES[0] + u : u);
+/** Only https links (or API paths) are ever placed in src/href, so a bad URL in the data can't run script. */
+export const safeUrl = (u: string | null | undefined) => (u && /^https:\/\//i.test(u) ? u : '');
+export const mediaUrl = (u: string | null | undefined) => (!u ? '' : u.startsWith('/') && !u.startsWith('//') ? API_BASES[0] + u : safeUrl(u));
