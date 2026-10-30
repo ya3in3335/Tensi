@@ -72,8 +72,27 @@ function Phone3D() {
   );
 }
 
+/** The association's logo as a floating 3D glass emblem. */
+function Emblem() {
+  const { t } = useI18n();
+  return (
+    <div className="emblem-stage" aria-hidden>
+      <div className="orb orb-a" /><div className="orb orb-b" /><div className="ring" />
+      <Tilt className="emblem-tilt" max={12}>
+        <div className="emblem">
+          <img src="/logo.webp" alt="" />
+          <div className="float-chip chip-1 glass"><span className="tile-xs" style={{ ['--c' as string]: '#e9762b' }}><Icon name="calendar" size={16} /></span>{t('activities')}</div>
+          <div className="float-chip chip-2 glass"><span className="tile-xs" style={{ ['--c' as string]: '#2f7d6b' }}><Icon name="mic" size={16} /></span>{t('lectures')}</div>
+          <div className="float-chip chip-3 glass"><span className="tile-xs" style={{ ['--c' as string]: '#7a4b9a' }}><Icon name="users" size={16} /></span>{t('volunteer')}</div>
+        </div>
+      </Tilt>
+    </div>
+  );
+}
+
 const mb = (n: number) => `${(n / 1048576).toFixed(1)} MB`;
 
+/** Secondary "download our app" section: the 3D phone next to the APK card. */
 export function DownloadSection() {
   const { t } = useI18n();
   const d = useDates();
@@ -81,11 +100,13 @@ export function DownloadSection() {
   const [copied, setCopied] = useState(false);
   return (
     <section id="download" className="download">
+      <div className="section-title reveal"><span className="eyebrow">Android</span><h2>{t('dlTitle')}</h2><p className="muted">{t('dlSub')}</p></div>
+      <div className="app-grid">
+      <Phone3D />
       <Tilt className="download-card glass glow-border reveal" max={4}>
         <div className="download-main depth">
           <span className="tile-lg"><Icon name="phone" size={34} /></span>
-          <h2>{t('dlTitle')}</h2>
-          <p className="muted">{t('dlSub')}</p>
+          <h3>{t('dlCardTitle')}</h3>
           {data && <div className="specs">
             <div><small>{t('dlVersion')}</small><b><Ltr>{data.version}</Ltr></b></div>
             <div><small>{t('dlSize')}</small><b><Ltr>{mb(data.size)}</Ltr></b></div>
@@ -109,6 +130,7 @@ export function DownloadSection() {
           </details>}
         </div>
       </Tilt>
+      </div>
     </section>
   );
 }
@@ -121,21 +143,24 @@ export default function Home() {
   const { data, error, loading, reload } = useLoad(() => api.get<HomeData>('/api/home'));
   const lectures = useLoad(() => api.get<{ items: Lecture[] }>('/api/lectures?pageSize=3'));
   const name = loc(data?.settings.association_name_ar, data?.settings.association_name_fr);
+  const aboutFull = loc(data?.settings.about_ar, data?.settings.about_fr).trim();
+  const about = aboutFull.length > 220 ? `${aboutFull.slice(0, 220).replace(/\s+\S*$/, '')}…` : aboutFull;
   const hasLive = !!data && (data.announcements.length + data.activePolls.length + data.activities.length + data.recentNews.length + data.media.length > 0 || (lectures.data?.items.length ?? 0) > 0);
 
   return (
     <Page>
       <section className="landing-hero">
         <div className="hero-copy">
-          <span className="kicker"><img src="/logo.webp" alt="" />{name || t('landingKicker')}</span>
-          <h1 className="words">{(user ? t('welcomeUser', { name: user.fullName.split(' ')[0] }) : t('landingTitle')).split(' ').map((w, i) => <span key={i} style={{ ['--i' as string]: i }}>{w}</span>)}</h1>
-          <p>{t('landingTagline')}</p>
+          <span className="kicker"><img src="/logo.webp" alt="" />{name || t('appName')}</span>
+          <h1 className="words">{(user ? t('welcomeUser', { name: user.fullName.split(' ')[0] }) : t('assocTitle')).split(' ').map((w, i) => <span key={i} style={{ ['--i' as string]: i }}>{w}</span>)}</h1>
+          <p>{about || t('assocTagline')}</p>
           <div className="hero-ctas">
-            <a className="btn big glow-border" href="#download"><Icon name="download" size={22} /> {t('ctaDownload')}</a>
-            {user ? <a className="btn ghost big" href="#live">{t('ctaExplore')}</a> : <Link className="btn ghost big" to="/register">{t('ctaJoin')}</Link>}
+            <Link className="btn big glow-border" to="/activities" viewTransition><Icon name="calendar" size={22} /> {t('ctaActivities')}</Link>
+            {user ? <Link className="btn ghost big" to="/about">{t('ctaAbout')}</Link> : <Link className="btn ghost big" to="/register">{t('ctaJoin')}</Link>}
           </div>
+          <a className="app-link" href="#download"><Icon name="phone" size={18} /> {t('appLink')} <Icon name="download" size={16} /></a>
         </div>
-        <Phone3D />
+        <Emblem />
       </section>
 
       <nav className="quick">
@@ -150,20 +175,6 @@ export default function Home() {
       <div className="marquee" aria-hidden>
         <div className="marquee-track">{[0, 1].map((k) => <span key={k}>{FEATURES.map(([ico, title]) => <b key={title}><Icon name={ico} size={20} /> {t(title)}</b>)}</span>)}</div>
       </div>
-
-      <section className="features">
-        <div className="section-title reveal"><span className="eyebrow">{t('appName')}</span><h2>{t('featuresTitle')}</h2><p className="muted">{t('featuresSub')}</p></div>
-        <div className="bento">{FEATURES.map(([ico, title, desc, c, c2, to], i) => {
-          const inner = <>
-            <span className="tile-lg depth" style={{ ['--c' as string]: c, ['--c2' as string]: c2 }}><Icon name={ico} size={30} /></span>
-            <h3 className="depth">{t(title)}</h3><p className="depth">{t(desc)}</p>
-            {i === 0 && <img className="bento-shot depth" src="/img/app-home-light.webp" alt="" loading="lazy" />}
-            <span className="go depth" aria-hidden><Icon name="forward" size={18} /></span>
-          </>;
-          const cls = `feature glass spot reveal b${i + 1}`;
-          return to.startsWith('#') ? <Tilt key={title} as="a" href={to} className={cls} max={6}>{inner}</Tilt> : <Tilt key={title} as={Link} to={to} className={cls} max={6} viewTransition>{inner}</Tilt>;
-        })}</div>
-      </section>
 
       <div id="live" />
       {(loading || error != null) && <div style={{ marginTop: 24 }}><State loading={loading && !data} error={error} onRetry={reload} /></div>}
@@ -208,6 +219,19 @@ export default function Home() {
           <Link key={m.id} to="/gallery" style={{ borderRadius: 18, overflow: 'hidden', aspectRatio: '1' }}><img src={mediaUrl(m.thumbnail_url ?? m.url)} alt={m.title_ar ?? ''} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /></Link>
         ))}</div>
       </>}
+
+      <section className="features">
+        <div className="section-title reveal"><span className="eyebrow">{name || t('appName')}</span><h2>{t('featuresTitle')}</h2><p className="muted">{t('featuresSub')}</p></div>
+        <div className="bento">{FEATURES.map(([ico, title, desc, c, c2, to], i) => {
+          const inner = <>
+            <span className="tile-lg depth" style={{ ['--c' as string]: c, ['--c2' as string]: c2 }}><Icon name={ico} size={30} /></span>
+            <h3 className="depth">{t(title)}</h3><p className="depth">{t(desc)}</p>
+            <span className="go depth" aria-hidden><Icon name="forward" size={18} /></span>
+          </>;
+          const cls = `feature glass spot reveal b${i + 1}`;
+          return to.startsWith('#') ? <Tilt key={title} as="a" href={to} className={cls} max={6}>{inner}</Tilt> : <Tilt key={title} as={Link} to={to} className={cls} max={6} viewTransition>{inner}</Tilt>;
+        })}</div>
+      </section>
 
       <section className="steps">
         <div className="section-title reveal"><span className="eyebrow">1 · 2 · 3</span><h2>{t('stepsTitle')}</h2></div>
