@@ -18,6 +18,7 @@ export interface ApkInfo { version: string; size: number; sha256: string; date: 
 const QUICK: [string, Key, IconName, string, string][] = [
   ['/news', 'news', 'news', '#8b2b3d', '#5e1a28'],
   ['/lectures', 'lectures', 'mic', '#2f7d6b', '#1c5446'],
+  ['/census', 'census', 'checkCircle', '#1f5a44', '#123b2c'],
   ['/gallery', 'gallery', 'image', '#e9762b', '#c4501f'],
   ['/donations', 'donations', 'gift', '#e8432a', '#b02e1b'],
   ['/about', 'about', 'info', '#7a4b9a', '#4f2d6b'],

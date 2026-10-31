@@ -8,6 +8,7 @@ import { ActivitiesPage, ActivityDetail } from './pages/Activities';
 import { PollsPage, PollDetail } from './pages/Polls';
 import { LecturesPage, LectureDetail, LectureForm } from './pages/Lectures';
 import Volunteer from './pages/Volunteer';
+import { CensusCard, CensusForm, CensusHome } from './pages/Census';
 import { Login, Register, Forgot, VerifyEmail, VerifyPhone } from './pages/Auth';
 import { Account, Notifications, MyActivities } from './pages/Account';
 import Icon, { type IconName } from './components/Icon';
@@ -15,7 +16,7 @@ import Splash from './components/Splash';
 import { useMotionEffects } from './components/motion';
 
 const MAIN: [string, Key, IconName][] = [['/', 'home', 'home'], ['/activities', 'activities', 'calendar'], ['/polls', 'polls', 'ballot'], ['/volunteer', 'volunteer', 'heart'], ['/account', 'account', 'user']];
-const TOP: [string, Key][] = [['/', 'home'], ['/news', 'news'], ['/activities', 'activities'], ['/lectures', 'lectures'], ['/polls', 'polls'], ['/volunteer', 'volunteer'], ['/gallery', 'gallery'], ['/donations', 'donations']];
+const TOP: [string, Key][] = [['/', 'home'], ['/news', 'news'], ['/activities', 'activities'], ['/lectures', 'lectures'], ['/polls', 'polls'], ['/census', 'census'], ['/volunteer', 'volunteer'], ['/gallery', 'gallery'], ['/donations', 'donations']];
 
 /** Pill shown while offline, then briefly when the connection is back. */
 function ConnectionBanner() {
@@ -63,6 +64,9 @@ export default function App() {
           <Route path="/lectures" element={<LecturesPage />} />
           <Route path="/lectures/:id" element={<LectureDetail />} />
           <Route path="/lectures/:id/register" element={<LectureForm />} />
+          <Route path="/census" element={<CensusHome />} />
+          <Route path="/census/register" element={<CensusForm />} />
+          <Route path="/census/card/:id" element={<CensusCard />} />
           <Route path="/volunteer" element={<Volunteer />} />
           <Route path="/gallery" element={<Gallery />} />
           <Route path="/donations" element={<Donations />} />
