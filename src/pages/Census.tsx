@@ -17,7 +17,7 @@ interface Registration {
   id: string; meetingId: string; regNo: number; firstName: string; lastName: string; status: string; checkedInAt: number | null;
   wilayaAr: string | null; communeAr: string | null; meeting?: { title: string; startsAt: number; location: string; status: string }; qr?: string | null;
 }
-interface Profile { firstName: string; lastName: string; gender: string | null; wilayaCode: number | null; communeId: number | null; birthDate: string | null; maritalStatus: string | null }
+interface Profile { firstName: string; lastName: string; gender: string | null; wilayaCode: number | null; communeId: number | null; birthDate: string | null; maritalStatus: string | null; childrenCount: number | null }
 interface Geo { w: [number, string, string][]; c: [number, number, string, string][] }
 
 const MARITAL = ['single', 'married', 'divorced', 'widowed'] as const;
@@ -90,7 +90,7 @@ export function CensusForm() {
   const { user, redirect } = useMember();
   const [geo, setGeo] = useState<Geo | null>(null);
   const [meetings, setMeetings] = useState<Meeting[] | null>(null);
-  const [f, setF] = useState({ firstName: '', lastName: '', gender: '', wilaya: 0, commune: 0, day: 0, month: 0, year: 0, marital: '', meeting: params.get('meeting') ?? '' });
+  const [f, setF] = useState({ firstName: '', lastName: '', gender: '', wilaya: 0, commune: 0, day: 0, month: 0, year: 0, marital: '', children: '', meeting: params.get('meeting') ?? '' });
   const [tried, setTried] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -110,6 +110,7 @@ export function CensusForm() {
       setF((x) => ({
         ...x, firstName: x.firstName || p.firstName, lastName: x.lastName || p.lastName, gender: x.gender || (p.gender ?? ''),
         wilaya: x.wilaya || (p.wilayaCode ?? 0), commune: x.commune || (p.communeId ?? 0), marital: x.marital || (p.maritalStatus ?? ''),
+        children: x.children || (p.childrenCount != null ? String(p.childrenCount) : ''),
         year: x.year || y || 0, month: x.month || m || 0, day: x.day || dd || 0,
       }));
     }).catch(() => undefined);
@@ -124,6 +125,8 @@ export function CensusForm() {
     firstName: !NAME.test(f.firstName.trim()), lastName: !NAME.test(f.lastName.trim()), wilaya: !f.wilaya,
     commune: !f.commune || !communes.some((c) => c[0] === f.commune), birth: !validBirthDate(f.year, f.month, f.day),
     marital: !MARITAL.includes(f.marital as never), meeting: !f.meeting,
+    // Married: number of children required (the wife is counted with them).
+    children: f.marital === 'married' && !(/^\d{1,2}$/.test(f.children) && Number(f.children) <= 30),
   };
   const invalid = Object.values(bad).some(Boolean);
 
@@ -138,6 +141,7 @@ export function CensusForm() {
       const r = await api.post<{ item: Registration }>(`/api/stats/meetings/${f.meeting}/register`, {
         firstName: f.firstName.trim(), lastName: f.lastName.trim(), gender: f.gender || null, wilayaCode: f.wilaya, communeId: f.commune,
         birthDate: `${f.year}-${String(f.month).padStart(2, '0')}-${String(f.day).padStart(2, '0')}`, maritalStatus: f.marital,
+        childrenCount: f.marital === 'married' ? Number(f.children) : null,
       });
       nav(`/census/card/${r.item.id}`, { replace: true });
     } catch (x) { setError(x); } finally { setBusy(false); }
@@ -193,6 +197,11 @@ export function CensusForm() {
             <button type="button" key={m} className={f.marital === m ? 'chip on' : 'chip'} onClick={() => set({ marital: m })}>{t(`ms_${m}` as Key)}</button>
           ))}</div>
           {tried && bad.marital && <small className="error-text">{t('censusFix')}</small>}
+          {f.marital === 'married' && (
+            <Field label={t('childrenCountLabel')} error={tried && bad.children} hint={t('childrenHint')}>
+              <input inputMode="numeric" value={f.children} onChange={(e) => set({ children: e.target.value.replace(/\D/g, '').slice(0, 2) })} />
+            </Field>
+          )}
         </section>
         <section className="panel glass stack">
           <h3><Icon name="calendar" /> {t('secMeeting')}</h3>

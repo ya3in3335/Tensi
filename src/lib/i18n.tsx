@@ -134,6 +134,9 @@ const ar = {
   err_invalid_birth_date: 'تاريخ الميلاد غير صحيح',
   err_cannot_cancel: 'لا يمكن إلغاء هذا التسجيل الآن',
   liveUpdates: 'يتحدّث تلقائياً',
+  childrenCountLabel: 'عدد الأولاد',
+  childrenHint: 'الزوجة تُحسب مع الأولاد',
+  err_children_required: 'أدخل عدد الأولاد (الزوجة تُحسب مع الأولاد)',
 };
 
 type Dict = typeof ar;
@@ -268,6 +271,9 @@ const fr: Dict = {
   err_invalid_birth_date: 'Date de naissance invalide',
   err_cannot_cancel: 'Impossible d’annuler maintenant',
   liveUpdates: 'Mise à jour automatique',
+  childrenCountLabel: 'Nombre d’enfants',
+  childrenHint: 'L’épouse est comptée avec les enfants',
+  err_children_required: 'Indiquez le nombre d’enfants (l’épouse comptée avec eux)',
 };
 
 export type Key = keyof Dict;
